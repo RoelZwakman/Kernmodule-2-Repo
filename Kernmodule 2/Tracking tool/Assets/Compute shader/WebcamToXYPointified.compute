@@ -1,0 +1,67 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel WebcamToXYPos
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+[numthreads(16, 16, 1)]
+void WebcamToXYPos(uint2 id : SV_DispatchThreadID)
+{
+
+	float range = 10;
+
+	float rCheck = 0.95;
+	float gCheck = 0.95;
+	float bCheck = 0.95;
+
+
+	if (Result[id.xy].r > rCheck && Result[id.xy].g > gCheck && Result[id.xy].b > bCheck)
+	{
+		Result[id.xy] = float4(1, 0, 0, 1);
+
+		int x;// = 0;
+		int y;// = 0;
+		for (x = 0; x < range; x++)
+		{
+			for (y = 0; y < range; y++)
+			{
+				if (Result[id.xy - float2(1, 1)].r != 0) // || 0 && Result[id.xy - float2(-x, y)].r || 0 && Result[id.xy - float2(-x, y)].r || 0
+				{
+					Result[id.xy - float2(1, 1)] = float4(0, 0, 0, 1);
+				}
+				else
+				{
+					//Result[id.xy] = float4(0, 0, 0, 1);
+				}
+			}
+		}
+
+	}
+
+	/*
+	/////FOR-LOOP DOEN, DAN CHECKEN OF EEN VAN DE PIXELS BINNEN X RANGE EN Y RANGE AL ROOD ZIJN
+
+	else if(Result[id.xy].r > rCheck && Result[id.xy].g > gCheck && Result[id.xy].b > bCheck)
+	{
+	//Result[id.xy] = float4(1, 0, 0, 1);
+	if(id.x - Result[float2(15,15)].r > range || id.y - Result[float2(15,15)].g > range)
+	{
+	Result[float2(15, 15)] = float4(id.x, id.y, 0, 1);
+	Result[id.xy] = float4(1, 0, 0, 1);
+	}
+	else
+	{
+	Result[id.xy] = float4(1, 1, 0, 1);
+	}
+	}*/
+	else
+	{
+		Result[id.xy] = float4(0, 0, 0, 1);
+	}
+
+}
+
+
+
+

@@ -1,0 +1,35 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel WebcamToXYPos
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+float2 lastxy;
+
+[numthreads(16,16,1)]
+void WebcamToXYPos (uint2 id : SV_DispatchThreadID)
+{
+
+	float range = 10;
+
+	float rCheck = 0.95;
+	float gCheck = 0.95;
+	float bCheck = 0.95;
+
+
+	if (Result[id.xy].r > rCheck && Result[id.xy].g > gCheck && Result[id.xy].b > bCheck)
+	{
+		Result[id.xy] = float4(1, 0, 0, 1);
+	}
+
+	else
+	{
+		Result[id.xy] = float4(0, 0, 0, 1);
+	}
+	
+}
+
+
+
+
